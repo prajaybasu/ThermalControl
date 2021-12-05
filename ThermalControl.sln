@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThermalControl", "src\ThermalControl\ThermalControl.csproj", "{E310FA66-CBB9-4444-9ABA-1BCED9DA107E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E310FA66-CBB9-4444-9ABA-1BCED9DA107E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E310FA66-CBB9-4444-9ABA-1BCED9DA107E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E310FA66-CBB9-4444-9ABA-1BCED9DA107E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E310FA66-CBB9-4444-9ABA-1BCED9DA107E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4F96FD1E-4A1E-4223-B373-DF3D65FE1DCC}
+	EndGlobalSection
+EndGlobal
