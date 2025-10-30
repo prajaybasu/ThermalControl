@@ -35,11 +35,11 @@ public class AdaptiveCoolingService : IHostedService
                     while (true)
                     {
                         await TunePL1(45);
-                        await SetTGPMin();
+                        await SetTGPMax();
                         await SetFanMode();
                         await SetFanMax();
                         await PrintIrSensorValue();
-                        await Task.Delay(30000);
+                        await Task.Delay(5000);
                     }
                 }
                 catch (Exception ex)
@@ -65,7 +65,7 @@ public class AdaptiveCoolingService : IHostedService
 
     async Task SetFanMode()
     {
-        byte[] inputData = new byte[2] { byte.MaxValue, Convert.ToByte(96) };
+        byte[] inputData = [byte.MaxValue, Convert.ToByte(96)];
 
         await _hpWmiService.InvokeBiosCommand(131080, 26, 0, inputData);
         _logger.LogInformation("Set Fan Mode: Done");
@@ -73,12 +73,8 @@ public class AdaptiveCoolingService : IHostedService
     }
     async Task SetFanMax()
     {
-        byte[] inputData = new byte[2];
-
-
-        inputData[0] = Convert.ToByte(100);
-        inputData[1] = Convert.ToByte(100);
-        await _hpWmiService.InvokeBiosCommand(131080, 46, (uint)0, inputData);
+        byte[] inputData = [Convert.ToByte(100), Convert.ToByte(100)];
+        await _hpWmiService.InvokeBiosCommand(131080, 46, 0, inputData);
         _logger.LogInformation("Set Fan: Done");
 
     }
@@ -88,7 +84,7 @@ public class AdaptiveCoolingService : IHostedService
 
         inputData[0] = Convert.ToByte(64);
         inputData[1] = Convert.ToByte(pl1);
-        await _hpWmiService.InvokeBiosCommand(131080, 41, (uint)0, inputData);
+        await _hpWmiService.InvokeBiosCommand(131080, 41, 0, inputData);
         _logger.LogInformation("Set PL1: Done");
 
     }
@@ -96,20 +92,20 @@ public class AdaptiveCoolingService : IHostedService
     {
         byte[] inputData = new byte[4];
 
-        inputData[0] = (byte)1;
-        inputData[1] = (byte)0;
-        inputData[2] = (byte)1;
-        await _hpWmiService.InvokeBiosCommand(131080, 34, (uint)0, inputData);
+        inputData[0] = 1;
+        inputData[1] = 0;
+        inputData[2] = 1;
+        await _hpWmiService.InvokeBiosCommand(131080, 34, 0, inputData);
         _logger.LogInformation("Set TGP: Done");
 
     }
     async Task SetTGPMin()
     {
         byte[] inputData = new byte[4];
-        inputData[0] = (byte)0;
-        inputData[1] = (byte)0;
-        inputData[2] = (byte)1;
-        await _hpWmiService.InvokeBiosCommand(131080, 34, (uint)0, inputData);
+        inputData[0] = 0;
+        inputData[1] = 0;
+        inputData[2] = 1;
+        await _hpWmiService.InvokeBiosCommand(131080, 34, 0, inputData);
         _logger.LogInformation("Set TGP: Done");
 
     }
@@ -121,7 +117,8 @@ public class AdaptiveCoolingService : IHostedService
     }
     async Task PrintIrSensorValue()
     {
-        _logger.LogInformation($"IR Temperature: {await GetIrSensorValue()} C");
+        var temperature = await GetIrSensorValue();
+        _logger.LogInformation("IR Temperature: {temperature} C", temperature);
     }
 
 }

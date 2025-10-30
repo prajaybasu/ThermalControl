@@ -1,14 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Management.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Threading.Tasks;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ThermalControl
 {
+
     public class HPWMIService : IDisposable
     {
         public record HpBiosDataOut(string OriginalDataType, bool? Active, byte[] Data, string InstanceName,
@@ -19,7 +17,7 @@ namespace ThermalControl
 
         private CimSession? _cimSession;
         private CimInstance? _cimInstance;
-        private static readonly byte[] Sign = new byte[] { 83, 69, 67, 85 };
+        private static readonly byte[] Sign = [83, 69, 67, 85];
 
         public HPWMIService(ILogger<HPWMIService> logger = null!)
         {
@@ -27,9 +25,10 @@ namespace ThermalControl
         }
         public async Task InitializeAsync()
         {
-            _cimSession = await (CimSession.CreateAsync(null).ToTask());
-            _cimInstance = (await (_cimSession.QueryInstancesAsync(@"root\wmi", "WQL", "SELECT * FROM hpqBIntM").ToTask()));
+            _cimSession = await CimSession.CreateAsync(null).ToTask();
+            _cimInstance = await _cimSession.QueryInstancesAsync(@"root\wmi", "WQL", "SELECT * FROM hpqBIntM").ToTask();
         }
+        
         public async Task<HpBiosDataOut> InvokeBiosCommand(uint command, uint commandType, uint size, byte[]? biosData = null)
         {
             if (!_initialized)
@@ -38,7 +37,7 @@ namespace ThermalControl
             }
             biosData ??= Array.Empty<byte>();
 
-            using var dataInClass = await (_cimSession!.GetClassAsync(@"root\wmi", "hpqBDataIn").ToTask());
+            using var dataInClass = await _cimSession!.GetClassAsync(@"root\wmi", "hpqBDataIn").ToTask();
             using var dataIn = new CimInstance(dataInClass);
 
             var inParams = _cimInstance!.CimClass.CimClassMethods["hpqBIOSInt128"].Parameters;
@@ -49,9 +48,8 @@ namespace ThermalControl
             dataIn.CimInstanceProperties["Size"].Value = biosData.Length;
             dataIn.CimInstanceProperties["Sign"].Value = Sign;
 
-            CimMethodParametersCollection cimMethodParameters = new();
-            cimMethodParameters.Add(CimMethodParameter.Create("InData", dataIn, CimType.Instance, CimFlags.In));
-            using var dataOut = await (_cimSession.InvokeMethodAsync(_cimInstance, $"hpqBIOSInt{size}", cimMethodParameters).ToTask());
+            CimMethodParametersCollection cimMethodParameters = [CimMethodParameter.Create("InData", dataIn, CimType.Instance, CimFlags.In)];
+            using var dataOut = await _cimSession.InvokeMethodAsync(_cimInstance, $"hpqBIOSInt{size}", cimMethodParameters).ToTask();
             using var outData = dataOut.OutParameters["OutData"].Value as CimInstance;
 
             if (outData == null)
